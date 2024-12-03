@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 require 'toy_robot'
 
 RSpec.describe ToyRobot do
