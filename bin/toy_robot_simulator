@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'pry'
+require './lib/parser'
+
+file_path= ARGV.first
+
+raise 'Please provide a file to test the toy_robot_simulator!' unless file_path
+
+Parser.new(file_path: file_path).call
+
+
