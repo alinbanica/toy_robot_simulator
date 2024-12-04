@@ -100,10 +100,30 @@ To install `rspec` (if not installed):
 ```
 
 ## Implementation
-`/bin` folder
-- contains the executable file `toy_robot_simulator` which is calling the `Parser` with the provide file containing the user commands for the robot
 
-`/lib` folder
-- contains two files:
-    - `parser.rb` used to read the commands line by line and send them to the `ToyRobot` to execute them
-    - `toy_robot.rb` is the main class which is implementing the commands requested by the user
+## Implementation
+For the implementation, I initially adopted a brute-force approach to ensure all requirements were fulfilled and all specifications were implemented and passing their tests. Once the functionality was verified, I refactored the solution to leverage the Command Pattern for improved design and maintainability. The resulting file and folder structure is detailed below.
+
+`/bin` Folder
+Contains the executable file toy_robot_simulator, which is responsible for invoking the Parser with the provided file containing user commands for the robot.
+`/lib` Folder
+ - `parser.rb`:
+Reads the command file line by line and forwards each command to the Processor for interpretation.
+
+- `processor.rb`:
+Interprets the input commands and delegates them to the corresponding command classes for execution.
+
+- `/commands` Folder:
+Groups all command classes (e.g., PLACE, MOVE, LEFT, RIGHT, REPORT). Each command is implemented as a separate class following a common interface to ensure consistency and extensibility.
+
+- `toy_robot.rb`:
+Represents the toy robot, encapsulating its position, direction, and movement logic.
+
+- `table.rb`:
+Represents the 5x5 grid tabletop and ensures that all robot movements and placements remain within valid boundaries.
+
+Some of the advantages of this approach are:
+ - Adding new commands is straightforward by creating new classes
+ - Each class has a clear, focused purpose.
+ - Commands and the core logic can be tested independently.
+ - The toy robot, table, and commands are decoupled =>  improving maintainability.
