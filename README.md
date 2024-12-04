@@ -74,7 +74,7 @@ Output: 3,3,NORTH
 ## Installation
 Clone the repository:
 ``` bash
-git clone https://github.comy/alinbanica/toy_robot_simulator
+git clone git@github.com:alinbanica/toy_robot_simulator.git
 cd toy_robot_simulator
 ```
 Install dependencies:
@@ -87,7 +87,7 @@ Run the application from the terminal:
 ```
 ./bin/toy_robot_simulator test.txt
 ```
-There is a test file `test.txt` which has 10 testing scenarios but you can provide your own file for testing the implementation.
+---
 
 ## Tests
 Run the test suite to verify the implementation:
@@ -99,7 +99,9 @@ To install `rspec` (if not installed):
  gem install rspec
 ```
 
-## Implementation
+The functionality was tested using the test cases provided in the test.txt file. This same file was utilized in the rspec tests when writing specifications for the ./bin/toy_robot_simulator executable.
+
+---
 
 ## Implementation
 For the implementation, I initially adopted a brute-force approach to ensure all requirements were fulfilled and all specifications were implemented and passing their tests. Once the functionality was verified, I refactored the solution to leverage the Command Pattern for improved design and maintainability. The resulting file and folder structure is detailed below.
