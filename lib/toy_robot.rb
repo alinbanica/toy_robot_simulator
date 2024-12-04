@@ -1,74 +1,40 @@
-class ToyRobot
+# frozen_string_literal: true
 
-  ACCEPTED_INSTRUCTIONS = ['PLACE', 'MOVE', 'LEFT', 'RIGHT', 'REPORT']
-  DIRECTIONS = ['NORTH', 'EAST', 'SOUTH', 'WEST']
-  MOVES = {
+class ToyRobot
+  DIRECTIONS = %w[NORTH EAST SOUTH WEST].freeze
+  FORWARD_MOVES = {
     'NORTH' => [0, 1],
     'EAST' => [1, 0],
     'SOUTH' => [0, -1],
-    'WEST' => [0, -1]
-  }
-  TABLE_HEIGHT = 5
-  TABLE_WIDTH = 5
+    'WEST' => [-1, 0]
+  }.freeze
+
+  attr_reader :x, :y, :facing
 
   def initialize
-    @placed = false
+    @x = nil
+    @y = nil
+    @facing = nil
   end
 
-  def execute(command)
-    if command.match(/\APLACE (\d+),(\d+),(#{DIRECTIONS.join('|')})\z/)
-      send('place', $1.to_i, $2.to_i, $3)
-    elsif command.match(/\A(#{(ACCEPTED_INSTRUCTIONS - ['PLACE']).join('|')})\z/)
-      send($1.downcase) if placed
-    end
+  def set_position(x, y)
+    @x = x
+    @y = y
+  end
+
+  def set_direction(facing)
+    return unless valid_direction?(facing)
+
+    @facing = facing
+  end
+
+  def placed?
+    [x, y, facing].all?
   end
 
   private
 
-  attr_reader :x, :y, :facing, :placed
-
-  def place(x, y, facing)
-    return unless valid_position?(x, y)
-
-    set_position(x, y)
-    set_direction(facing)
-
-    @placed = true
+  def valid_direction?(facing)
+    DIRECTIONS.include?(facing)
   end
-
-  def move
-    x = @x + MOVES[facing].first
-    y = @y + MOVES[facing].last
-
-    set_position(x, y) if valid_position?(x, y)
-  end
-
-  def left
-    set_direction(DIRECTIONS.rotate(-1)[current_direction_index])
-  end
-
-  def right
-    set_direction(DIRECTIONS.rotate[current_direction_index])
-  end
-
-  def report
-    puts "Output: #{x},#{y},#{facing}"
-  end
-
-  def set_position(x, y)
-    @x, @y = x, y
-  end
-
-  def set_direction(direction)
-    @facing = direction
-  end
-
-  def valid_position?(x, y)
-    (0...TABLE_WIDTH).include?(x) && (0...TABLE_HEIGHT).include?(y)
-  end
-
-  def current_direction_index
-    DIRECTIONS.index(facing)
-  end
-
 end

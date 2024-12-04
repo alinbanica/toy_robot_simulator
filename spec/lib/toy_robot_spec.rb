@@ -1,133 +1,54 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'toy_robot'
 
 RSpec.describe ToyRobot do
-  let(:robot) { ToyRobot.new }
+  let(:toy_robot) { ToyRobot.new }
 
-  describe 'PLACE command' do
-    it 'places the robot on a valid position and facing the correct direction' do
-      robot.execute('PLACE 1,2,SOUTH')
-
-      expect { robot.execute('REPORT') }
-        .to output(a_string_including('Output: 1,2,SOUTH'))
-        .to_stdout
-    end
-
-    it 'allows to re-place the robot on the table multiple times ' do
-      robot.execute('PLACE 1,2,SOUTH')
-      robot.execute('PLACE 4,0,NORTH')
-      robot.execute('PLACE 3,3,WEST')
-
-      expect { robot.execute('REPORT') }
-        .to output(a_string_including('Output: 3,3,WEST'))
-        .to_stdout
-    end
-
-    it 'ignores placing the robot outside of the table' do
-      robot.execute('PLACE 7,8,SOUTH')
-
-      expect_no_output
-    end
-
-    it 'ignores placing the robot on the table when facing an unknown direction' do
-      robot.execute('PLACE 1,2,NORTHY')
-
-      expect_no_output
-    end
-
-    it 'ignores placing the robot on the table when any position is missing' do
-      robot.execute('PLACE 1,NORTH')
-
-      expect_no_output
+  describe '#set_position' do
+    it 'places the robot on a specified position on the table' do
+      expect { toy_robot.set_position(2, 1) }
+        .to change(toy_robot, :x).from(nil).to(2)
+        .and change(toy_robot, :y).from(nil).to(1)
+        .and not_change(toy_robot, :facing)
     end
   end
 
-  describe 'MOVE command' do
-    it 'moves the robot one unit forward facing the current direction' do
-      robot.execute('PLACE 2,1,NORTH')
-      robot.execute('MOVE')
-
-      expect { robot.execute('REPORT') }
-        .to output(a_string_including('Output: 2,2,NORTH'))
-        .to_stdout
+  describe '#set_direction' do
+    context 'when the direction is valid' do
+      it 'changes the facing direction of the toy_robot' do
+        expect { toy_robot.set_direction('SOUTH') }
+          .to not_change(toy_robot, :x)
+          .and not_change(toy_robot, :y)
+          .and change(toy_robot, :facing).from(nil).to('SOUTH')
+      end
     end
 
-    it 'prevents robot to move outside of the table' do
-      robot.execute('PLACE 0,0,WEST')
-      robot.execute('MOVE')
-
-      expect { robot.execute('REPORT') }
-        .to output(a_string_including('Output: 0,0,WEST'))
-        .to_stdout
-    end
-  end
-
-  describe 'REPORT command' do
-    it "doesn't output anything if the robot was not placed on the table yet" do
-      robot.execute('LEFT')
-
-      expect_no_output
+    context 'when the direction is not valid' do
+      it "doesn't change the facing direction of the toy_robot" do
+        expect { toy_robot.set_direction('SOUTHY') }
+          .to not_change(toy_robot, :x)
+          .and not_change(toy_robot, :y)
+          .and not_change(toy_robot, :facing)
+      end
     end
   end
 
-  describe 'LEFT command' do
-    it 'turns the robot to the left without changing teh position' do
-      robot.execute('PLACE 4,1,EAST')
-      robot.execute('LEFT')
+  describe '#placed?' do
+    context 'when the position and direction are set' do
+      it 'should be true' do
+        toy_robot.set_direction('SOUTH')
+        toy_robot.set_position(1, 3)
 
-      expect { robot.execute('REPORT') }
-        .to output(a_string_including('Output: 4,1,NORTH'))
-        .to_stdout
-    end
-  end
-
-  describe 'RIGHT command' do
-    it 'turns the robot to the left without changing teh position' do
-      robot.execute('PLACE 4,1,EAST')
-      robot.execute('RIGHT')
-
-      expect { robot.execute('REPORT') }
-        .to output(a_string_including('Output: 4,1,SOUTH'))
-        .to_stdout
-    end
-  end
-
-  describe 'complex sequence of commands' do
-    it 'executes correctly the sequence of commands' do
-      robot.execute('PLACE 1,2,EAST')
-      robot.execute('MOVE')
-      robot.execute('MOVE')
-      robot.execute('LEFT')
-      robot.execute('MOVE')
-      robot.execute('REPORT')
-
-      expect { robot.execute('REPORT') }
-        .to output(a_string_including('Output: 3,3,NORTH'))
-        .to_stdout
+        expect(toy_robot.placed?).to be true
+      end
     end
 
-    it 'ingnores all commands before PLACE' do
-      robot.execute('MOVE')
-      robot.execute('REPORT')
-      robot.execute('MOVE')
-      robot.execute('LEFT')
-      robot.execute('PLACE 1,2,EAST')
-      robot.execute('MOVE')
-      robot.execute('MOVE')
-      robot.execute('RIGHT')
-      robot.execute('MOVE')
-      robot.execute('REPORT')
-
-      expect { robot.execute('REPORT') }
-        .to output(a_string_including('Output: 3,1,SOUTH'))
-        .to_stdout
+    context 'when the position and the direction are not set' do
+      it 'should be false' do
+        expect(toy_robot.placed?).to be false
+      end
     end
-
-  end
-
-  def expect_no_output
-    expect { robot.execute('REPORT') }
-      .to_not output
-      .to_stdout
   end
 end
