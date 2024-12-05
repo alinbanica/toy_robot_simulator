@@ -2,13 +2,14 @@
 
 module Commands
   ROTATE_INDEX_BY_DIRECTION = {
-    'LEFT' => -1,
-    'RIGHT' => 1
+    left: -1,
+    right: 1
   }.freeze
 
   class Turn
-    def initialize(toy_robot)
+    def initialize(toy_robot, direction)
       @toy_robot = toy_robot
+      @direction = direction
     end
 
     def execute
@@ -21,7 +22,7 @@ module Commands
 
     private
 
-    attr_reader :toy_robot
+    attr_reader :toy_robot, :direction
 
     def current_facing_index
       ToyRobot::DIRECTIONS.index(toy_robot.facing)
@@ -31,8 +32,5 @@ module Commands
       ROTATE_INDEX_BY_DIRECTION[direction]
     end
 
-    def direction
-      raise NoMethodError
-    end
   end
 end

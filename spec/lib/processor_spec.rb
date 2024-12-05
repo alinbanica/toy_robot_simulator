@@ -43,8 +43,8 @@ RSpec.describe Processor do
 
     context 'when command is LEFT' do
       it 'expects to call the left command with the correct params' do
-        expect(Commands::Left).to receive(:new)
-          .with(toy_robot)
+        expect(Commands::Turn).to receive(:new)
+          .with(toy_robot, :left)
           .and_call_original
 
         processor.process('LEFT')
@@ -53,8 +53,8 @@ RSpec.describe Processor do
 
     context 'when command is RIGHT' do
       it 'expects to call the left command with the correct params' do
-        expect(Commands::Right).to receive(:new)
-          .with(toy_robot)
+        expect(Commands::Turn).to receive(:new)
+          .with(toy_robot, :right)
           .and_call_original
 
         processor.process('RIGHT')

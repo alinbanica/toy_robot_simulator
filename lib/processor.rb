@@ -34,9 +34,9 @@ class Processor
     when 'MOVE'
       Commands::Move.new(toy_robot, table)
     when 'LEFT'
-      Commands::Left.new(toy_robot)
+      Commands::Turn.new(toy_robot, :left)
     when 'RIGHT'
-      Commands::Right.new(toy_robot)
+      Commands::Turn.new(toy_robot, :right)
     when 'REPORT'
       Commands::Report.new(toy_robot)
     end
